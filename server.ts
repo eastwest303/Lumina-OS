@@ -10,12 +10,20 @@ async function startServer() {
   app.use(express.json());
 
   // In-memory array to act as our relationship graph / events database MVP
-  const events: any[] = [];
+  const events: any[] = [
+      { type: "SYSTEM", payload: "Demo workspace initialized.", timestamp: new Date() }
+  ];
   const contacts: any[] = [
-    { id: 1, name: "Sarah Jenkins", stage: "Qualified", risk: "Low", lastContact: "Today", intentScore: 85 }
+    { id: 1, name: "Sarah Jenkins", stage: "Qualified", risk: "Low", lastContact: "Today", intentScore: 85 },
+    { id: 2, name: "Michael Chen", stage: "Touring", risk: "High", lastContact: "Yesterday", intentScore: 92 },
+    { id: 3, name: "David West", stage: "Dormant", risk: "Low", lastContact: "12 Days Ago", intentScore: 45 },
+    { id: 4, name: "Jessica Alba", stage: "Lead", risk: "Medium", lastContact: "2 Hrs Ago", intentScore: 68 }
   ];
   const deals: any[] = [
-    { id: 101, address: "123 Maple St", stage: "Touring", probability: 70, expectedClose: "Next Month" }
+    { id: 101, address: "123 Maple St", stage: "Touring", probability: 70, expectedClose: "Next Month" },
+    { id: 102, address: "902 Hillside Avenue", stage: "Under Contract", probability: 95, expectedClose: "In 14 Days" },
+    { id: 103, address: "Project West", stage: "Lead", probability: 45, expectedClose: "Unknown" },
+    { id: 104, address: "442 Ocean Blvd", stage: "Touring", probability: 82, expectedClose: "Next Week" }
   ];
 
   // API constraints checklist:
@@ -29,7 +37,8 @@ async function startServer() {
         contacts,
         deals,
         alerts: [
-            { id: 1, message: "Sarah Jenkins has not been contacted after touring 123 Maple St.", urgency: "High" }
+            { id: 1, message: "Communication gap with David West detected. Sentiment is cooling.", urgency: "High" },
+            { id: 2, message: "Interest rates dip predicted. Automating 12 client alerts.", urgency: "Medium" }
         ],
         recentEvents: events.slice(-5)
     })

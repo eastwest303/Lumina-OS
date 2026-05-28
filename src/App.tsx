@@ -15,7 +15,12 @@ import {
     AlertCircle,
     UserCircle,
     ChevronRight,
-    Loader2
+    Loader2,
+    Database,
+    Network,
+    Plug,
+    MessageSquare,
+    Link2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +33,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Toaster, toast } from 'sonner';
 
-type ViewType = 'dashboard' | 'inbox' | 'contacts' | 'pipeline' | 'tasks';
+type ViewType = 'dashboard' | 'inbox' | 'contacts' | 'pipeline' | 'tasks' | 'integrations';
 
 export default function App() {
   const [activeView, setActiveView] = useState<ViewType>('dashboard');
@@ -128,17 +133,22 @@ export default function App() {
                 active={activeView === 'tasks'} 
                 onClick={() => setActiveView('tasks')} 
             />
+            <NavItem 
+                icon={<Plug size={18} />} 
+                label="Integrations" 
+                active={activeView === 'integrations'} 
+                onClick={() => setActiveView('integrations')} 
+            />
         </div>
 
         <div className="p-4 mt-auto">
              <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-colors group text-sm border-t border-white/10 pt-4 mt-4">
                 <Avatar className="w-9 h-9 border border-white/20">
-                    <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
-                    <AvatarFallback>SJ</AvatarFallback>
+                    <AvatarFallback className="bg-[#141414] text-slate-400">AW</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 overflow-hidden">
-                    <p className="font-medium text-slate-200 truncate">Agent Marcus</p>
-                    <p className="text-xs text-slate-500 truncate">Command Center</p>
+                    <p className="font-medium text-slate-200 truncate">Agent Workspace</p>
+                    <p className="text-[10px] text-emerald-400 truncate uppercase mt-0.5 font-bold tracking-wider">Demo Mode Ready</p>
                 </div>
                 <Settings size={16} className="text-slate-500 group-hover:text-slate-300" />
             </div>
@@ -179,11 +189,12 @@ export default function App() {
                     </div>
                 ) : (
                     <>
-                        {activeView === 'dashboard' && <DashboardView data={dashboardData} />}
+                        {activeView === 'dashboard' && <DashboardView data={dashboardData} setActiveView={setActiveView} />}
                         {activeView === 'inbox' && <InboxView />}
                         {activeView === 'contacts' && <ContactsView data={dashboardData} />}
                         {activeView === 'pipeline' && <PipelineView data={dashboardData} />}
                         {activeView === 'tasks' && <TasksView />}
+                        {activeView === 'integrations' && <IntegrationsView />}
                     </>
                 )}
             </div>
@@ -269,12 +280,22 @@ function NavItem({ icon, label, badge, active, onClick }: { icon: React.ReactNod
     )
 }
 
-function DashboardView({ data }: { data: any }) {
+function DashboardView({ data, setActiveView }: { data: any, setActiveView: (v: ViewType) => void }) {
     return (
         <div className="space-y-6 slide-in-bottom animation-delay-100 font-sans text-slate-100 h-full flex flex-col">
             <div>
                 <h1 className="text-xs font-bold uppercase tracking-widest text-slate-500">AI Operating System / Command Center</h1>
-                <div className="text-xl font-medium tracking-tight mt-1 text-slate-100">Good morning, Agent Marcus.</div>
+                <div className="text-xl font-medium tracking-tight mt-1 text-slate-100">Good morning, Agent Workspace.</div>
+            </div>
+
+            <div className="p-5 rounded-2xl border border-orange-500/30 bg-orange-500/10 flex items-center justify-between shadow-lg">
+                <div>
+                    <h3 className="text-lg font-bold text-orange-400">Welcome to Lumina OS</h3>
+                    <p className="text-sm text-slate-300 mt-1 max-w-xl">Your predictive real estate environment is ready. To unlock full intelligence, please connect your communication channels and CRM data.</p>
+                </div>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white font-bold tracking-wide border-none px-6" onClick={() => setActiveView('integrations')}>
+                    Connect Data Sources <ChevronRight className="ml-2 w-4 h-4" />
+                </Button>
             </div>
 
             {/* Top Metrics Bento */}
@@ -600,6 +621,74 @@ function TasksView() {
                      </div>
                  </div>
              </Card>
+        </div>
+    )
+}
+
+function IntegrationsView() {
+    const integrations = [
+        {
+            id: 'google',
+            name: 'Google Workspace',
+            description: 'Sync Gmail, Calendar events, and Docs to fuel the relationship memory engine.',
+            icon: <MessageSquare className="text-blue-400 w-8 h-8" />,
+            connected: false
+        },
+        {
+            id: 'mls',
+            name: 'MLS / Zillow Sync',
+            description: 'Real-time property data, listing status, and showing feedback.',
+            icon: <Database className="text-emerald-400 w-8 h-8" />,
+            connected: true
+        },
+        {
+            id: 'twilio',
+            name: 'Twilio Auth',
+            description: 'Enable AI-driven SMS routing and voice call transcriptions.',
+            icon: <Network className="text-rose-400 w-8 h-8" />,
+            connected: false
+        },
+        {
+            id: 'pinecone',
+            name: 'Vector Database Engine',
+            description: 'Configure Pinecone to store long-term AI relationship memories.',
+            icon: <Link2 className="text-orange-400 w-8 h-8" />,
+            connected: true
+        }
+    ];
+
+    return (
+        <div className="slide-in-bottom font-sans text-slate-100 flex flex-col h-[calc(100vh-140px)]">
+            <div className="mb-6 flex items-end justify-between shrink-0">
+                <div>
+                    <h1 className="text-xs font-bold uppercase tracking-widest text-slate-500">System Configuration</h1>
+                    <div className="text-xl font-medium tracking-tight mt-1 text-slate-100">Integrations & Data Sources</div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 flex-1">
+                {integrations.map(integ => (
+                    <Card key={integ.id} className="rounded-2xl border border-white/10 bg-[#141414] shadow-2xl transition-shadow text-slate-100 p-6 flex flex-col justify-between">
+                        <div>
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="w-14 h-14 rounded-xl border border-white/10 bg-[#0f0f0f] flex items-center justify-center">
+                                    {integ.icon}
+                                </div>
+                                {integ.connected ? (
+                                    <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-none hover:bg-emerald-500/20">Connected</Badge>
+                                ) : (
+                                    <Badge className="bg-white/5 text-slate-400 border border-white/10 shadow-none hover:bg-white/10">-</Badge>
+                                )}
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-200 mb-2">{integ.name}</h3>
+                            <p className="text-sm text-slate-400 leading-relaxed mb-6">{integ.description}</p>
+                        </div>
+                        <Button className={`w-full font-bold shadow-none border-none ${integ.connected ? 'bg-white/5 text-slate-300 hover:bg-white/10' : 'bg-white text-black hover:bg-slate-200'}`}>
+                            {integ.connected ? 'Configure' : 'Connect Account'}
+                        </Button>
+                    </Card>
+                ))}
+            </div>
         </div>
     )
 }
